@@ -14,4 +14,16 @@ export { router as notifySchedules } from './notifySchedules.js'
 export { router as swapRequests } from './swapRequests.js'
 export { router as timeOffRequests } from './timeOffRequests.js'
 
+export { router as overtimes } from './overtimes.js'
+export { router as benfitTimes } from './benifitTimes.js'
+export { router as disciplinearyActions } from './disciplinaryActions.js'
+export { router as payPeriods } from './payPeriods.js'
+export { router as payRates } from './payRates.js'
+export { router as trainings } from './trainings.js'
+
+
+
+
+
+
 

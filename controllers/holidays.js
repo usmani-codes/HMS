@@ -1,3 +1,4 @@
+import Joi from "joi";
 import mongoose from "mongoose";
 import CustomAPIError from "../errors/custom-error.js";
 import asyncWrapper from "../middlewares/asyncWrapper.js";
@@ -5,10 +6,23 @@ import asyncWrapper from "../middlewares/asyncWrapper.js";
 import Holiday from "../models/holiday.js";
 
 
+const holidaySchema = Joi.object({
+    date: Joi.string().required(),
+    name: Joi.string().required(),
+    description: Joi.string().optional(),
+});
+
+
+
+
+
 // @desc Get all holidays
 // @route GET /api/v1/holidays
 const getHolidays = asyncWrapper(async (req, res, next) => {
-    const holidays = await Holiday.find({}, "-__v -createdAt -updatedAt")
+    // const holidays = await Holiday.find({}, "-__v -createdAt -updatedAt")
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const holidays = await Holiday.find({}, "-__v -createdAt -updatedAt").limit(limit).skip((page - 1) * limit);
 
     if (!holidays.length) {
         throw new CustomAPIError(404, "holidays not found ..")
@@ -40,9 +54,12 @@ const getHoliday = asyncWrapper(async (req, res, next) => {
 // @route POST /api/v1/holidays
 const createHoliday = asyncWrapper(async (req, res, next) => {
     const { date, name, description } = req.body
-    if (!date || !name || !description) {
-        throw new CustomAPIError(400, 'please fill all required fields ..')
-    }
+    // if (!date || !name || !description) {
+    //     throw new CustomAPIError(400, 'please fill all required fields ..')
+    // }
+
+    const { error } = holidaySchema.validate(req.body);
+    if (error) throw new CustomAPIError(400, error.details[0].message);
     const holiday = await Holiday.findOne({ name }, 'name date')
 
     if (holiday && (holiday.date === date && holiday.name === name)) {
@@ -75,7 +92,7 @@ const updateHoliday = asyncWrapper(async (req, res, next) => {
         throw new CustomAPIError(404, "holiday not found ..")
     }
 
-    res.status(201).json({ msg: 'holiday updated ', data: holiday })
+    res.status(200).json({ success: true, message: "Holiday updated", data: holiday });
 })
 
 // @desc delete a holiday by id
@@ -91,7 +108,7 @@ const deleteHoliday = asyncWrapper(async (req, res, next) => {
         throw new CustomAPIError(404, "holiday not found ..")
     }
 
-    res.status(203).json({ success: true, msg: `holiday deleted`, holiday })
+    res.status(200).json({ success: true, message: "Holiday deleted", data: holiday });
 })
 
 // @desc get holydays count

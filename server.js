@@ -9,7 +9,7 @@ const __dirname = dirname(_filename)
 
 
 //routes
-import { assignments, auth, departments, employees, holidays, hospitals, notifySchedules, roles, shifts, swapRequests, timeOffRequests, users } from './routes/index.js'
+import { users, roles, auth, employees, assignments, departments, holidays, hospitals, notifySchedules, shifts, swapRequests, timeOffRequests, overtimes, benfitTimes, payPeriods, payRates, trainings, disciplinearyActions } from './routes/index.js'
 
 // middlewares
 import { AUTH, logger, notFound, errorHandler, RolesOnly } from './middlewares/index.js'
@@ -40,7 +40,13 @@ app.use(`${api}/assignments`, AUTH, assignments)
 app.use(`${api}/departments`, AUTH, departments)
 app.use(`${api}/swap-requests`, AUTH, swapRequests)
 app.use(`${api}/notify-schedules`, AUTH, notifySchedules)
-app.use(`${api}/time-off-requests`, AUTH, timeOffRequests)
+app.use(`${api}/timeoff-requests`, AUTH, timeOffRequests)
+
+app.use(`${api}/overtimes`, overtimes)
+app.use(`${api}/payrates`, AUTH, payRates)
+app.use(`${api}/payperiods`, AUTH, payPeriods)
+app.use(`${api}/trainings`, AUTH, trainings)
+app.use(`${api}/discip-actions`, AUTH, disciplinearyActions)
 
 
 // middilewares
